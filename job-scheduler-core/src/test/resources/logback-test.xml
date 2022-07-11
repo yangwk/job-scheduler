@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <property name="app_name" value="job-scheduler" />
+    <property name="log_basedir" value="/logs/${app_name}" />
+    <property name="log_pattern" value="%d{yyyy-MM-dd HH:mm:ss.SSS,GMT+8} [%thread] %-5level - %logger{80}:%line - %msg%n" />
+    <property name="log_charset" value="UTF-8" />
+    <property name="log_maxHistory" value="180" />
+    <property name="log_maxFileSize" value="1GB" />
+    
+    <appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>${log_pattern}</pattern>
+            <charset>${log_charset}</charset>
+        </encoder>
+    </appender>
+
+    <appender name="file" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${log_basedir}/${app_name}.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${log_basedir}/${app_name}-%d{yyyy-MM-dd}-%i.log</fileNamePattern>
+            <maxFileSize>${log_maxFileSize}</maxFileSize>
+            <maxHistory>${log_maxHistory}</maxHistory>
+        </rollingPolicy>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>${log_pattern}</pattern>
+            <charset>${log_charset}</charset>
+        </encoder>
+    </appender>
+
+    <appender name="file_shadow" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>WARN</level>
+        </filter>
+        <file>${log_basedir}/${app_name}-warn.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${log_basedir}/${app_name}-warn-%d{yyyy-MM-dd}-%i.log</fileNamePattern>
+            <maxFileSize>${log_maxFileSize}</maxFileSize>
+            <maxHistory>${log_maxHistory}</maxHistory>
+        </rollingPolicy>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>${log_pattern}</pattern>
+            <charset>${log_charset}</charset>
+        </encoder>
+    </appender>
+
+    <root level="INFO">
+        <appender-ref ref="stdout" />
+        <appender-ref ref="file" />
+        <appender-ref ref="file_shadow" />
+    </root>
+    
+    <logger name="com.github.yangwk.jobscheduler.core" additivity="false" level="DEBUG">
+        <appender-ref ref="stdout"/>
+        <appender-ref ref="file" />
+        <appender-ref ref="file_shadow" />
+    </logger>
+    
+</configuration>  
+
